@@ -30,6 +30,12 @@ BuildArch:      noarch
 %description doc
 Documentation for the Universal Hardware Driver (UHD).
 
+%package examples
+Summary:        Example files for UHD
+Requires:       %{name} = %{version}-%{release}
+%description examples
+Examples for the Universal Hardware Driver (UHD).
+
 %package tools
 Summary:        Tools for working with / debugging USRP device
 Requires:       %{name} = %{version}-%{release}
@@ -44,7 +50,6 @@ Tools that are useful for working with and/or debugging USRP device.
 mkdir -p host/build
 pushd host/build
 %cmake ../
-#cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DLIB_SUFFIX=64
 make %{?_smp_mflags}
 popd
 
@@ -66,8 +71,12 @@ sed -i 's/BUS==/SUBSYSTEM==/;s/SYSFS{/ATTRS{/;s/MODE:="0666"/MODE:="0660", ENV{I
 mkdir -p %{buildroot}%{_prefix}/lib/udev/rules.d
 mv %{buildroot}%{_libdir}/uhd/utils/uhd-usrp.rules %{buildroot}%{_prefix}/lib/udev/rules.d/10-usrp-uhd.rules
 
-# Remove tests, examples binaries
-rm -rf %{buildroot}%{_libdir}/uhd/{tests,examples}
+# Set recommended limits
+mkdir -p %{buildroot}%{_prefix}/lib/sysctl.d
+echo -e 'net.core.wmem_max=576000\nnet.core.rmem_max=33554432' > %{buildroot}%{_prefix}/lib/sysctl.d/90-override.conf
+
+# Remove tests
+rm -rf %{buildroot}%{_libdir}/uhd/tests
 
 # Move the utils stuff to libexec dir
 mkdir -p %{buildroot}%{_libexecdir}/uhd
@@ -95,14 +104,18 @@ install -Dpm 0755 tools/uhd_dump/chdr_log %{buildroot}%{_bindir}/chdr_log
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post 
+/usr/sbin/sysctl -w net.core.wmem_max=576000
+/usr/sbin/sysctl -w net.core.rmem_max=33554432
+/sbin/ldconfig
+
+%postun
+/sbin/ldconfig
 
 %pre
 getent group usrp >/dev/null || groupadd -r usrp >/dev/null
 
 %files
-%exclude %{_docdir}/%{name}/doxygen
 %exclude %{_datadir}/uhd/images
 %doc _tmpdoc/*
 %{_bindir}/uhd_*
@@ -111,6 +124,7 @@ getent group usrp >/dev/null || groupadd -r usrp >/dev/null
 %{_bindir}/usrp_x3xx_fpga_burner
 %{_bindir}/octoclock_firmware_burner
 %{_prefix}/lib/udev/rules.d/10-usrp-uhd.rules
+%{_prefix}/lib/sysctl.d/90-override.conf
 %{_libdir}/lib*.so.*
 %{_libexecdir}/uhd
 %{_mandir}/man1/*.1*
@@ -121,6 +135,9 @@ getent group usrp >/dev/null || groupadd -r usrp >/dev/null
 %{_libdir}/lib*.so
 %{_libdir}/cmake/uhd/*.cmake
 %{_libdir}/pkgconfig/*.pc
+
+%files examples
+%{_libdir}/uhd/examples/*
 
 %files doc
 %doc %{_docdir}/%{name}/doxygen
