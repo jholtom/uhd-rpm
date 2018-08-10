@@ -1,5 +1,5 @@
 # uhd-rpm
-version = 3.11.1.0
+version = 3.13.0.1
 name = uhd
 full_name = $(name)-$(version)
 download_url = "https://github.com/EttusResearch/$(name)/archive/v$(version).tar.gz"

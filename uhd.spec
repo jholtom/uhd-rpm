@@ -88,15 +88,6 @@ popd
 mkdir _tmpdoc
 mv %{buildroot}%{_docdir}/%{name}/{LICENSE,README.md} _tmpdoc
 
-# convert hardlinks to symlinks (to not package the file twice)
-pushd %{buildroot}%{_bindir}
-for f in usrp_n2xx_simple_net_burner usrp_x3xx_fpga_burner;
-do
-  unlink $f
-  ln -s ../..%{_libexecdir}/uhd/$f
-done
-popd
-
 # tools
 install -Dpm 0755 tools/usrp_x3xx_fpga_jtag_programmer.sh %{buildroot}%{_bindir}/usrp_x3xx_fpga_jtag_programmer.sh
 install -Dpm 0755 tools/uhd_dump/chdr_log %{buildroot}%{_bindir}/chdr_log
@@ -120,9 +111,6 @@ getent group usrp >/dev/null || groupadd -r usrp >/dev/null
 %doc _tmpdoc/*
 %{_bindir}/uhd_*
 %{_bindir}/usrp2*
-%{_bindir}/usrp_n2xx_simple_net_burner
-%{_bindir}/usrp_x3xx_fpga_burner
-%{_bindir}/octoclock_firmware_burner
 %{_prefix}/lib/udev/rules.d/10-usrp-uhd.rules
 %{_prefix}/lib/sysctl.d/90-override.conf
 %{_libdir}/lib*.so.*
