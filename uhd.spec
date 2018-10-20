@@ -1,6 +1,6 @@
 Name:           uhd
 Version:	%{VERSION}
-Release:        2%{?dist}
+Release:        %{RELEASE}%{?dist}
 Summary:        Universal Hardware Driver for Ettus Research products
 License:        GPLv3+
 Group:          Applications/Engineering
@@ -66,9 +66,17 @@ make test
 pushd host/build
 make install DESTDIR=%{buildroot}
 
+# USB permissions
+mkdir -p %{buildroot}%{_sysconfdir}/udev/rules.d
+mv %{buildroot}%{_libdir}/uhd/utils/uhd-usrp.rules %{buildroot}%{_sysconfdir}/udev/rules.d/
+
 # Set recommended limits
 mkdir -p %{buildroot}%{_prefix}/lib/sysctl.d
 echo -e 'net.core.wmem_max=33554432\nnet.core.rmem_max=33554432' > %{buildroot}%{_prefix}/lib/sysctl.d/90-override.conf
+
+# Set thread prioirty
+mkdir -p %{buildroot}%{_sysconfdir}/security/limits.d
+echo -e '@wheel    - rtprio    99' > %{buildroot}%{_sysconfdir}/security/limits.d/uhd-usrp.conf
 
 # Remove tests
 rm -rf %{buildroot}%{_libdir}/uhd/tests
@@ -91,21 +99,23 @@ install -Dpm 0755 tools/uhd_dump/chdr_log %{buildroot}%{_bindir}/chdr_log
 rm -rf $RPM_BUILD_ROOT
 
 %post 
+/usr/bin/udevadm control --reload-rules
+/usr/bin/udevadm trigger
 /usr/sbin/sysctl -w net.core.wmem_max=33554432
 /usr/sbin/sysctl -w net.core.rmem_max=33554432
 /sbin/ldconfig
 
 %postun
+/usr/bin/udevadm control --reload-rules
 /sbin/ldconfig
-
-%pre
-getent group usrp >/dev/null || groupadd -r usrp >/dev/null
 
 %files
 %doc _tmpdoc/*
 %{_bindir}/uhd_*
 %{_bindir}/usrp2*
+%{_sysconfdir}/udev/rules.d/uhd-usrp.rules
 %{_prefix}/lib/sysctl.d/90-override.conf
+%{_sysconfdir}/security/limits.d/uhd-usrp.conf
 %{_libdir}/lib*.so.*
 %{_libexecdir}/uhd
 %{_mandir}/man1/*.1*

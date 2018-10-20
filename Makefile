@@ -1,5 +1,6 @@
 # uhd-rpm
 version = 3.13.0.1
+release = 3
 name = uhd
 full_name = $(name)-$(version)
 download_url = "https://github.com/EttusResearch/$(name)/archive/v$(version).tar.gz"
@@ -28,6 +29,7 @@ rpm: download
 	  --define "_rpmdir %{_topdir}/rpmbuild/RPMS" \
 	  --define "_srcrpmdir %{_topdir}/rpmbuild/SRPMS" \
 	  --define "_specdir %{_topdir}" \
-	  --define "_sourcedir  %{_topdir}/rpmbuild/SOURCES" \
+	  --define "_sourcedir %{_topdir}/rpmbuild/SOURCES" \
 	  --define "VERSION $(version)" \
+ 	  --define "RELEASE $(release)" \
 	  -ba $(name).spec
