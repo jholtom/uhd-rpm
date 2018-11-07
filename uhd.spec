@@ -76,7 +76,7 @@ echo -e 'net.core.wmem_max=33554432\nnet.core.rmem_max=33554432' > %{buildroot}%
 
 # Set thread prioirty
 mkdir -p %{buildroot}%{_sysconfdir}/security/limits.d
-echo -e '@wheel    - rtprio    99' > %{buildroot}%{_sysconfdir}/security/limits.d/uhd-usrp.conf
+echo -e '@wheel    - rtprio    99' > %{buildroot}%{_sysconfdir}/security/limits.d/90-uhd-usrp.conf
 
 # Remove tests
 rm -rf %{buildroot}%{_libdir}/uhd/tests
@@ -115,7 +115,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/usrp2*
 %{_sysconfdir}/udev/rules.d/uhd-usrp.rules
 %{_prefix}/lib/sysctl.d/90-override.conf
-%{_sysconfdir}/security/limits.d/uhd-usrp.conf
+%{_sysconfdir}/security/limits.d/90-uhd-usrp.conf
 %{_libdir}/lib*.so.*
 %{_libexecdir}/uhd
 %{_mandir}/man1/*.1*
