@@ -1,5 +1,5 @@
 Name:           uhd
-Version:	%{VERSION}
+Version:		%{VERSION}
 Release:        %{RELEASE}%{?dist}
 Summary:        Universal Hardware Driver for Ettus Research products
 License:        GPLv3+
@@ -8,10 +8,11 @@ Url:            https://github.com/EttusResearch/uhd
 Source:         %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  gcc gcc-c++ cmake
-BuildRequires:  boost-devel, libusb1-devel
-BuildRequires:  docutils, doxygen, pkgconfig, libpcap-devel
-BuildRequires:  python-mako
+BuildRequires:  gcc gcc-c++ cmake3
+BuildRequires:  boost-devel libusb1-devel libpcap-devel gpsd-devel
+BuildRequires:  docutils doxygen pkgconfig
+BuildRequires:  python-mako python-requests python-devel numpy
+Requires: 		python-requests
 
 %description
 The UHD is the universal hardware driver for Ettus Research products.
@@ -39,9 +40,14 @@ Examples for the Universal Hardware Driver (UHD).
 %package tools
 Summary:        Tools for working with / debugging USRP device
 Requires:       %{name} = %{version}-%{release}
-
 %description tools
 Tools that are useful for working with and/or debugging USRP device.
+
+%package python
+Summary:        Python UHD Library
+Requires:       %{name} = %{version}-%{release}
+%description python
+Python2 UHD Library
 
 %prep
 %setup -n %{name}-%{version}
@@ -49,13 +55,13 @@ Tools that are useful for working with and/or debugging USRP device.
 %build
 mkdir -p host/build
 pushd host/build
-%cmake ../
+cmake3  -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} ..
 make %{?_smp_mflags}
 popd
 
 # tools
 pushd tools/uhd_dump
-make %{?_smp_mflags} CFLAGS="%{optflags}" LDFLAGS="%{?__global_ldflags}"
+make %{?_smp_mflags}
 popd
 
 %check
@@ -137,6 +143,9 @@ rm -rf $RPM_BUILD_ROOT
 %doc tools/README.md
 %{_bindir}/usrp_x3xx_fpga_jtag_programmer.sh
 %{_bindir}/chdr_log
+
+%files python
+/usr/lib64/python2.7/site-packages/uhd/*
 
 %changelog
 
