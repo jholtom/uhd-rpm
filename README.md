@@ -1,4 +1,4 @@
-# udh-rpm
+# uhd-rpm
 
 RPM Build Scripts for UHD [https://github.com/EttusResearch/uhd]
 

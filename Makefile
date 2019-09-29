@@ -1,5 +1,5 @@
 # uhd-rpm
-version = 3.14.0.0
+version = 3.14.1.0
 release = 1
 name = uhd
 full_name = $(name)-$(version)
