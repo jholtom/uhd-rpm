@@ -1,5 +1,5 @@
 Name:           uhd
-Version:		%{VERSION}
+Version:	%{VERSION}
 Release:        %{RELEASE}%{?dist}
 Summary:        Universal Hardware Driver for Ettus Research products
 License:        GPLv3+
@@ -9,10 +9,10 @@ Source:         %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  gcc gcc-c++ cmake3
-BuildRequires:  boost-devel libusb1-devel libpcap-devel gpsd-devel
+BuildRequires:  boost-devel libusb1-devel libpcap-devel gpsd-devel ncurses-devel 
 BuildRequires:  docutils doxygen pkgconfig
 BuildRequires:  python-mako python-requests python-devel numpy
-Requires: 		python-requests
+Requires: 	python-requests
 
 %description
 The UHD is the universal hardware driver for Ettus Research products.
@@ -55,7 +55,7 @@ Python2 UHD Library
 %build
 mkdir -p host/build
 pushd host/build
-cmake3  -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} ..
+cmake3  -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} -DENABLE_GPSD=ON ..
 make %{?_smp_mflags}
 popd
 
