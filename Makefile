@@ -1,9 +1,10 @@
 # uhd-rpm
-version = 3.14.1.0
+version = 3.14.1.1
 release = 1
 name = uhd
 full_name = $(name)-$(version)
-download_url = "https://github.com/EttusResearch/$(name)/archive/v$(version).tar.gz"
+download_url = https://github.com/EttusResearch/$(name)/archive/v$(version).tar.gz
+download_url2 = https://github.com/EttusResearch/uhd/releases/download/v$(version)/uhd-images_$(version).tar.xz
 
 all: rpm
 
@@ -20,6 +21,8 @@ mkdir: clean
 
 download: mkdir
 	curl -L -o rpmbuild/SOURCES/$(full_name).tar.gz $(download_url); 
+	curl -L -o rpmbuild/SOURCES/uhd-images_$(version).tar.xz $(download_url2); 
+	cp uhd-limits.conf rpmbuild/SOURCES
 
 rpm: download
 	rpmbuild $(RPM_OPTS) \
@@ -32,4 +35,4 @@ rpm: download
 	  --define "_sourcedir %{_topdir}/rpmbuild/SOURCES" \
 	  --define "VERSION $(version)" \
  	  --define "RELEASE $(release)" \
-	  -ba $(name).spec
+	  -ba $(name).spec --without firmware --without neon --without wireshark
