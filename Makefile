@@ -1,5 +1,5 @@
 # uhd-rpm
-version = 3.14.1.1
+version = 3.15.0.0
 release = 1
 name = uhd
 full_name = $(name)-$(version)
@@ -19,6 +19,7 @@ mkdir: clean
 	mkdir -p rpmbuild/SRPMS
 
 download: mkdir
+	sudo pip3.6 install mako -t /usr/lib64/python3.6/ 
 	curl -L -o rpmbuild/SOURCES/$(full_name).tar.gz $(download_url); 
 
 rpm: download
