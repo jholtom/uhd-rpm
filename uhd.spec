@@ -12,7 +12,7 @@ BuildRequires:  gcc gcc-c++ cmake3
 BuildRequires:  boost169-devel libusb1-devel libpcap-devel ncurses-devel 
 BuildRequires:  docutils doxygen pkgconfig
 BuildRequires:  python36-devel python36-numpy python36-requests
-Requires: python36-requests
+Requires: 	python36-requests python3-tkinter
 
 %description
 The UHD is the universal hardware driver for Ettus Research products.
@@ -56,7 +56,7 @@ Python3 UHD Library
 %build
 mkdir -p host/build
 pushd host/build
-cmake3  -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} -DENABLE_PYTHON_API=ON -DBOOST_INCLUDEDIR=/usr/include/boost169/ -DBOOST_LIBRARYDIR=/usr/lib64/boost169/ ..
+cmake3 -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} -DENABLE_PYTHON_API=ON -DBOOST_INCLUDEDIR=/usr/include/boost169/ -DBOOST_LIBRARYDIR=/usr/lib64/boost169/ ..
 make %{?_smp_mflags}
 popd
 
@@ -143,6 +143,7 @@ rm -rf $RPM_BUILD_ROOT
 %files tools
 %doc tools/README.md
 %{_bindir}/usrp_x3xx_fpga_jtag_programmer.sh
+%{_bindir}/rfnoc_image_builder
 %{_bindir}/chdr_log
 
 %files python3
