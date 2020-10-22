@@ -5,6 +5,7 @@ Summary:        Universal Hardware Driver for Ettus Research products
 License:        GPLv3+
 Group:          Applications/Engineering
 Url:            https://github.com/EttusResearch/uhd
+%undefine _disable_source_fetch
 Source:         https://github.com/EttusResearch/uhd/archive/v4.0.0.0.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
