@@ -9,11 +9,15 @@ Url:            https://github.com/EttusResearch/uhd
 Source:         https://github.com/EttusResearch/uhd/archive/v4.0.0.0.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  gcc gcc-c++ cmake3
-BuildRequires:  boost169-devel libusb1-devel libpcap-devel ncurses-devel
-BuildRequires:  docutils doxygen pkgconfig
-BuildRequires:  python36-devel python36-numpy python36-requests
-Requires: 	python36-requests python3-tkinter
+BuildRequires:  gcc-c++
+BuildRequires:  cmake
+BuildRequires:  boost-devel, libusb1-devel, python3-cheetah, ncurses-devel
+BuildRequires:  python3-docutils, doxygen, pkgconfig, libpcap-devel
+BuildRequires:  python3-numpy, vim-common
+BuildRequires:  python3-mako, python3-requests, python3-devel, tar, python3-ruamel-yaml
+
+Requires(pre):  shadow-utils, glibc-common
+Requires:       python3-tkinter
 
 %description
 The UHD is the universal hardware driver for Ettus Research products.
@@ -23,7 +27,7 @@ future Ettus Research products. It can be used standalone without GNU Radio.
 %package devel
 Summary:        Development files for UHD
 Requires:       %{name} = %{version}-%{release}
-Requires: boost169-devel
+Requires: boost-devel
 %description devel
 Development files for the Universal Hardware Driver (UHD).
 
@@ -57,7 +61,7 @@ Python3 UHD Library
 %build
 mkdir -p host/build
 pushd host/build
-cmake3 -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} -DENABLE_PYTHON_API=ON -DBOOST_INCLUDEDIR=/usr/include/boost169/ -DBOOST_LIBRARYDIR=/usr/lib64/boost169/ ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} -DENABLE_PYTHON_API=ON ..
 make %{?_smp_mflags}
 popd
 
