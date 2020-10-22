@@ -1,15 +1,15 @@
 Name:           uhd
-Version:	%{VERSION}
-Release:        %{RELEASE}%{?dist}
+Version:	    4.0.0.0
+Release:        1%{?dist}
 Summary:        Universal Hardware Driver for Ettus Research products
 License:        GPLv3+
 Group:          Applications/Engineering
 Url:            https://github.com/EttusResearch/uhd
-Source:         %{name}-%{version}.tar.gz
+Source:         https://github.com/EttusResearch/uhd/archive/v4.0.0.0.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  gcc gcc-c++ cmake3
-BuildRequires:  boost169-devel libusb1-devel libpcap-devel ncurses-devel 
+BuildRequires:  boost169-devel libusb1-devel libpcap-devel ncurses-devel
 BuildRequires:  docutils doxygen pkgconfig
 BuildRequires:  python36-devel python36-numpy python36-requests
 Requires: 	python36-requests python3-tkinter
@@ -66,7 +66,7 @@ make %{?_smp_mflags}
 popd
 
 %check
-#cd host/build 
+#cd host/build
 #make test
 
 %install
@@ -105,7 +105,7 @@ install -Dpm 0755 tools/uhd_dump/chdr_log %{buildroot}%{_bindir}/chdr_log
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post 
+%post
 /usr/bin/udevadm control --reload-rules
 /usr/bin/udevadm trigger
 /usr/sbin/sysctl -w net.core.wmem_max=33554432
